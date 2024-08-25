@@ -18,3 +18,10 @@ model FoodCategory {
   title String
   icon  String
 }
+
+model PizzaAdditional {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  icon  String
+  price Float
+}
