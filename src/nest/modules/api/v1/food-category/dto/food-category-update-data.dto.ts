@@ -1,15 +1,15 @@
 import {
-    _FoodMarkUpdateData,
+    _FoodCategoryUpdateData,
 } from '@vanyamate/papajohns-v2-types';
 import { IsOptional, IsString } from 'class-validator';
 
 
-export class FoodMarkUpdateDataDto implements _FoodMarkUpdateData {
+export class FoodCategoryUpdateDataDto implements _FoodCategoryUpdateData {
     @IsString()
     @IsOptional()
-    text: string;
+    title: string;
 
     @IsString()
     @IsOptional()
-    color: string;
+    icon: string;
 }
