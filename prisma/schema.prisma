@@ -24,4 +24,25 @@ model PizzaAdditional {
   title String
   icon  String
   price Float
+
+  linkToSizes PizzaSizeToAdditional[]
+}
+
+model PizzaSizeToAdditional {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  sizeId       String @db.ObjectId
+  additionalId String @db.ObjectId
+
+  size       PizzaSize       @relation(fields: [sizeId], references: [id])
+  additional PizzaAdditional @relation(fields: [additionalId], references: [id])
+
+  @@unique([sizeId, additionalId])
+}
+
+model PizzaSize {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  size       String
+  multiplier Float
+
+  linkToAdditional PizzaSizeToAdditional[]
 }

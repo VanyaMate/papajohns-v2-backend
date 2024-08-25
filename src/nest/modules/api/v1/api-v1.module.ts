@@ -14,6 +14,9 @@ import {
 import {
     PizzaAdditionalModule,
 } from '@/nest/modules/api/v1/pizza-additional/pizza-additional.module';
+import {
+    PizzaSizeModule,
+} from '@/nest/modules/api/v1/pizza-size/pizza-size.module';
 
 
 @Module({
@@ -23,6 +26,7 @@ import {
         FoodCategoryModule,
         FoodCategoriesModule,
         PizzaAdditionalModule,
+        PizzaSizeModule,
     ],
 })
 export class ApiV1Module {
