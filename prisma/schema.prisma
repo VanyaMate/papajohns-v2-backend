@@ -12,3 +12,9 @@ model FoodMark {
   text  String
   color String
 }
+
+model FoodCategory {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  icon  String
+}
