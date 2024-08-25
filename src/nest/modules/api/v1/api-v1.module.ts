@@ -8,6 +8,9 @@ import {
 import {
     FoodCategoryModule,
 } from '@/nest/modules/api/v1/food-category/food-category.module';
+import {
+    FoodCategoriesModule,
+} from '@/nest/modules/api/v1/food-categories/food-categories.module';
 
 
 @Module({
@@ -15,6 +18,7 @@ import {
         FoodMarkModule,
         FoodMarksModule,
         FoodCategoryModule,
+        FoodCategoriesModule,
     ],
 })
 export class ApiV1Module {
