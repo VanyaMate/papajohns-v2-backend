@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { _FoodMark } from '@vanyamate/papajohns-v2-types';
 import {
     IFoodMarksService
-} from '@/domain/services/food-marks/food-marks-service.interface';
+} from '@/domain/services/marks/food-marks-service.interface';
 
 
 export class PrismaFoodMarksService implements IFoodMarksService {

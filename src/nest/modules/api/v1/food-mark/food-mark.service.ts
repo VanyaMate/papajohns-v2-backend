@@ -7,10 +7,10 @@ import {
 } from '@vanyamate/papajohns-v2-types';
 import {
     IFoodMarkService,
-} from '@/domain/services/food-mark/food-mark-service.interface';
+} from '@/domain/services/mark/food-mark-service.interface';
 import {
     PrismaFoodMarkService,
-} from '@/domain/services/food-mark/implementations/prisma/prisma-food-mark.service';
+} from '@/domain/services/mark/implementations/prisma/prisma-food-mark.service';
 
 
 @Injectable()

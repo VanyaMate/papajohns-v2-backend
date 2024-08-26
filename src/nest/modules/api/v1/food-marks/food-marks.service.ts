@@ -5,10 +5,10 @@ import { PrismaService } from '@/nest/modules/services/prisma/prisma.service';
 import { _FoodMark } from '@vanyamate/papajohns-v2-types';
 import {
     PrismaFoodMarksService,
-} from '@/domain/services/food-marks/implementations/prisma/prisma-food-marks.service';
+} from '@/domain/services/marks/implementations/prisma/prisma-food-marks.service';
 import {
     IFoodMarksService,
-} from '@/domain/services/food-marks/food-marks-service.interface';
+} from '@/domain/services/marks/food-marks-service.interface';
 
 
 @Injectable()

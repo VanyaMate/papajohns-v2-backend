@@ -1,10 +1,10 @@
 import {
     IFoodCategoryService,
-} from '@/domain/services/food-category/food-category-service.interface';
+} from '@/domain/services/category/food-category-service.interface';
 import { PrismaService } from '@/nest/modules/services/prisma/prisma.service';
 import {
     PrismaFoodCategoryService,
-} from '@/domain/services/food-category/implementations/prisma/prisma-food-category.service';
+} from '@/domain/services/category/implementations/prisma/prisma-food-category.service';
 import {
     _FoodCategory,
     _FoodCategoryCreateData,

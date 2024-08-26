@@ -6,7 +6,7 @@ import {
 import { PrismaClient } from '@prisma/client';
 import {
     IFoodCategoryService,
-} from '@/domain/services/food-category/food-category-service.interface';
+} from '@/domain/services/category/food-category-service.interface';
 
 
 export class PrismaFoodCategoryService implements IFoodCategoryService {

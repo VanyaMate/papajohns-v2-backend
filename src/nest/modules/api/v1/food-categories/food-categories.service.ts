@@ -1,10 +1,10 @@
 import {
     IFoodCategoriesService,
-} from '@/domain/services/food-categories/food-categories-service.interface';
+} from '@/domain/services/categories/food-categories-service.interface';
 import { PrismaService } from '@/nest/modules/services/prisma/prisma.service';
 import {
     PrismaFoodCategoriesService,
-} from '@/domain/services/food-categories/implemenetations/prisma/prisma-food-categories.service';
+} from '@/domain/services/categories/implemenetations/prisma/prisma-food-categories.service';
 import { _FoodCategory } from '@vanyamate/papajohns-v2-types';
 import { Injectable, Logger } from '@nestjs/common';
 

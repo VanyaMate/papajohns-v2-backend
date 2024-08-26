@@ -8,7 +8,9 @@ datasource db {
 }
 
 model Food {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
 
   types            FoodType[]
   linkToMarks      FoodToMark[]
@@ -52,13 +54,10 @@ model FoodCategory {
 }
 
 model FoodType {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  image       String
-  title       String
-  description String
-  person      Float
-  price       Float
-  foodId      String @db.ObjectId
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  image  String
+  price  Float
+  foodId String @db.ObjectId
 
   food             Food                   @relation(fields: [foodId], references: [id], onDelete: Cascade)
   nutritionals     FoodNutritional[]
@@ -89,8 +88,19 @@ model FoodSize {
   adminTitle String @default("")
   title      String
   multiplier Float
+  person     Float
 
-  linkToFoodTypes FoodTypeToSize[]
+  linkToFoodTypes      FoodTypeToSize[]
+  linkToFoodAdditional FoodSizeToAdditional[]
+}
+
+model FoodSizeToAdditional {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  sizeId       String @db.ObjectId
+  additionalId String @db.ObjectId
+
+  size       FoodSize       @relation(fields: [sizeId], references: [id], onDelete: Cascade)
+  additional FoodAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
 }
 
 model FoodAdditional {
@@ -101,6 +111,7 @@ model FoodAdditional {
   price       Float
 
   linkToFoodTypes FoodTypeToAdditional[]
+  linkToFoodSizes FoodSizeToAdditional[]
 }
 
 model FoodNutritional {

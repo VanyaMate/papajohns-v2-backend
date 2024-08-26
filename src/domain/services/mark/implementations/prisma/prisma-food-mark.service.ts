@@ -6,7 +6,7 @@ import {
 import { PrismaClient } from '@prisma/client';
 import {
     IFoodMarkService,
-} from '@/domain/services/food-mark/food-mark-service.interface';
+} from '@/domain/services/mark/food-mark-service.interface';
 
 
 export class PrismaFoodMarkService implements IFoodMarkService {

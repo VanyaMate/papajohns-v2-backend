@@ -1,10 +1,3 @@
-import {
-    _PizzaAdditional,
-    _PizzaAdditionalCreateData,
-    _PizzaAdditionalUpdateData,
-} from '@vanyamate/papajohns-v2-types';
-
-
 export interface IPizzaAdditionalService {
     create (data: _PizzaAdditionalCreateData): Promise<_PizzaAdditional>;
 
