@@ -7,111 +7,99 @@ datasource db {
   url      = env("MONGO_DB_URL")
 }
 
+// FoodMark
+// FoodCategory
+// FoodAdditional
+// FoodSize
+// FoodType
+// FoodNutritional
+// Food
+// Food -> [FoodCategory, FoodMark, FoodType[]] -> [FoodSize, FoodNutritional, FoodAdditional]
+
+model Food {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  types            FoodType[]
+  linkToMarks      FoodToMark[]
+  linkToCategories FoodToCategory[]
+}
+
+model FoodToMark {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  foodId String @db.ObjectId
+  markId String @db.ObjectId
+
+  food Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  mark FoodMark @relation(fields: [markId], references: [id], onDelete: Cascade)
+}
+
+model FoodToCategory {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  foodId     String @db.ObjectId
+  categoryId String @db.ObjectId
+
+  food     Food         @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  category FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
 model FoodMark {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  text  String
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
   color String
-  pizza Pizza[]
+  icon  String
+
+  linkToFoods FoodToMark[]
 }
 
 model FoodCategory {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
+  color String
   icon  String
+
+  linkToFoods FoodToCategory[]
 }
 
-model PizzaAdditional {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  icon  String
-  price Float
-
-  linkToSizes       PizzaSizeToAdditional[]
-  linkToAdditionals PizzaToAdditionals[]
-}
-
-model PizzaSizeToAdditional {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  sizeId       String @db.ObjectId
-  additionalId String @db.ObjectId
-
-  size       PizzaSize       @relation(fields: [sizeId], references: [id], onDelete: Cascade)
-  additional PizzaAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
-
-  @@unique([sizeId, additionalId])
-}
-
-model PizzaSize {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  size       String
-  multiplier Float
-
-  linkToAdditional PizzaSizeToAdditional[]
-  linkToDough      PizzaDoughToSize[]
-}
-
-model PizzaDoughToSize {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  doughId String @db.ObjectId
-  sizeId  String @db.ObjectId
-
-  dough PizzaDough @relation(fields: [doughId], references: [id], onDelete: Cascade)
-  size  PizzaSize  @relation(fields: [sizeId], references: [id], onDelete: Cascade)
-
-  @@unique([doughId, sizeId])
-}
-
-model PizzaDough {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  price Float
-
-  linkToSizes  PizzaDoughToSize[]
-  linkToDoughs PizzaToDough[]
-}
-
-model PizzaNutritionalValue {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  value Float
-
-  pizzaId String @db.ObjectId
-  pizza   Pizza  @relation(fields: [pizzaId], references: [id], onDelete: Cascade)
-}
-
-model PizzaToDough {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  doughId String @db.ObjectId
-  pizzaId String @db.ObjectId
-
-  dough PizzaDough @relation(fields: [doughId], references: [id], onDelete: Cascade)
-  pizza Pizza      @relation(fields: [pizzaId], references: [id], onDelete: Cascade)
-
-  @@unique([doughId, pizzaId])
-}
-
-model PizzaToAdditionals {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  additionalId String @db.ObjectId
-  pizzaId      String @db.ObjectId
-
-  additional PizzaAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
-  pizza      Pizza           @relation(fields: [pizzaId], references: [id], onDelete: Cascade)
-
-  @@unique([additionalId, pizzaId])
-}
-
-model Pizza {
+model FoodType {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   image       String
   title       String
   description String
-  person      Int
+  person      Float
   price       Float
-  foodMarkId  String @db.ObjectId
+  foodId      String @db.ObjectId
 
-  mark             FoodMark                @relation(fields: [foodMarkId], references: [id])
-  dough            PizzaToDough[]
-  additional       PizzaToAdditionals[]
-  nutritionalValue PizzaNutritionalValue[]
+  food        Food             @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  linkToSizes FoodTypeToSize[]
+}
+
+model FoodTypeToSize {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  typeId String @db.ObjectId
+  sizeId String @db.ObjectId
+
+  type FoodType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  size FoodSize @relation(fields: [sizeId], references: [id], onDelete: Cascade)
+}
+
+model FoodSize {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  adminTitle     String           @default("")
+  title          String
+  multiplier     Float
+  FoodTypeToSize FoodTypeToSize[]
+}
+
+model FoodAdditional {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  image       String
+  title       String
+  description String
+  price       Float
+}
+
+model FoodNutritional {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  value Float
 }
