@@ -7,15 +7,6 @@ datasource db {
   url      = env("MONGO_DB_URL")
 }
 
-// FoodMark
-// FoodCategory
-// FoodAdditional
-// FoodSize
-// FoodType
-// FoodNutritional
-// Food
-// Food -> [FoodCategory, FoodMark, FoodType[]] -> [FoodSize, FoodNutritional, FoodAdditional]
-
 model Food {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
@@ -69,8 +60,10 @@ model FoodType {
   price       Float
   foodId      String @db.ObjectId
 
-  food        Food             @relation(fields: [foodId], references: [id], onDelete: Cascade)
-  linkToSizes FoodTypeToSize[]
+  food             Food                   @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  nutritionals     FoodNutritional[]
+  linkToSizes      FoodTypeToSize[]
+  linkToAdditional FoodTypeToAdditional[]
 }
 
 model FoodTypeToSize {
@@ -82,12 +75,22 @@ model FoodTypeToSize {
   size FoodSize @relation(fields: [sizeId], references: [id], onDelete: Cascade)
 }
 
+model FoodTypeToAdditional {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  typeId       String @db.ObjectId
+  additionalId String @db.ObjectId
+
+  type       FoodType       @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  additional FoodAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
+}
+
 model FoodSize {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
-  adminTitle     String           @default("")
-  title          String
-  multiplier     Float
-  FoodTypeToSize FoodTypeToSize[]
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  adminTitle String @default("")
+  title      String
+  multiplier Float
+
+  linkToFoodTypes FoodTypeToSize[]
 }
 
 model FoodAdditional {
@@ -96,10 +99,15 @@ model FoodAdditional {
   title       String
   description String
   price       Float
+
+  linkToFoodTypes FoodTypeToAdditional[]
 }
 
 model FoodNutritional {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  value Float
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  value      Float
+  foodTypeId String @db.ObjectId
+
+  foodType FoodType @relation(fields: [foodTypeId], references: [id], onDelete: Cascade)
 }
