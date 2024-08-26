@@ -8,9 +8,10 @@ datasource db {
 }
 
 model FoodMark {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
   text  String
   color String
+  pizza Pizza[]
 }
 
 model FoodCategory {
@@ -25,7 +26,8 @@ model PizzaAdditional {
   icon  String
   price Float
 
-  linkToSizes PizzaSizeToAdditional[]
+  linkToSizes       PizzaSizeToAdditional[]
+  linkToAdditionals PizzaToAdditionals[]
 }
 
 model PizzaSizeToAdditional {
@@ -55,6 +57,8 @@ model PizzaDoughToSize {
 
   dough PizzaDough @relation(fields: [doughId], references: [id], onDelete: Cascade)
   size  PizzaSize  @relation(fields: [sizeId], references: [id], onDelete: Cascade)
+
+  @@unique([doughId, sizeId])
 }
 
 model PizzaDough {
@@ -62,5 +66,52 @@ model PizzaDough {
   title String
   price Float
 
-  linkToSizes PizzaDoughToSize[]
+  linkToSizes  PizzaDoughToSize[]
+  linkToDoughs PizzaToDough[]
+}
+
+model PizzaNutritionalValue {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  value Float
+
+  pizzaId String @db.ObjectId
+  pizza   Pizza  @relation(fields: [pizzaId], references: [id], onDelete: Cascade)
+}
+
+model PizzaToDough {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  doughId String @db.ObjectId
+  pizzaId String @db.ObjectId
+
+  dough PizzaDough @relation(fields: [doughId], references: [id], onDelete: Cascade)
+  pizza Pizza      @relation(fields: [pizzaId], references: [id], onDelete: Cascade)
+
+  @@unique([doughId, pizzaId])
+}
+
+model PizzaToAdditionals {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  additionalId String @db.ObjectId
+  pizzaId      String @db.ObjectId
+
+  additional PizzaAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
+  pizza      Pizza           @relation(fields: [pizzaId], references: [id], onDelete: Cascade)
+
+  @@unique([additionalId, pizzaId])
+}
+
+model Pizza {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  image       String
+  title       String
+  description String
+  person      Int
+  price       Float
+  foodMarkId  String @db.ObjectId
+
+  mark             FoodMark                @relation(fields: [foodMarkId], references: [id])
+  dough            PizzaToDough[]
+  additional       PizzaToAdditionals[]
+  nutritionalValue PizzaNutritionalValue[]
 }
