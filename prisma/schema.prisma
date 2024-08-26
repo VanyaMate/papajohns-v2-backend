@@ -45,4 +45,22 @@ model PizzaSize {
   multiplier Float
 
   linkToAdditional PizzaSizeToAdditional[]
+  linkToDough      PizzaDoughToSize[]
+}
+
+model PizzaDoughToSize {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  doughId String @db.ObjectId
+  sizeId  String @db.ObjectId
+
+  dough PizzaDough @relation(fields: [doughId], references: [id], onDelete: Cascade)
+  size  PizzaSize  @relation(fields: [sizeId], references: [id], onDelete: Cascade)
+}
+
+model PizzaDough {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  price Float
+
+  linkToSizes PizzaDoughToSize[]
 }

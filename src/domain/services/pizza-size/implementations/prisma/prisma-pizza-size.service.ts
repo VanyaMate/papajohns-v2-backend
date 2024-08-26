@@ -10,6 +10,9 @@ import {
 import {
     prismaSizeToDomain,
 } from '@/domain/services/pizza-size/implementations/prisma/converters/prismaSizeToDomain';
+import {
+    prismaSizeInclude,
+} from '@/domain/services/pizza-size/implementations/prisma/includes/prismaSizeInclude';
 
 
 export class PrismaPizzaSizeService implements IPizzaSizeService {
