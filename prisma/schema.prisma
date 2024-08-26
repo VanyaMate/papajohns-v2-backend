@@ -33,8 +33,8 @@ model PizzaSizeToAdditional {
   sizeId       String @db.ObjectId
   additionalId String @db.ObjectId
 
-  size       PizzaSize       @relation(fields: [sizeId], references: [id])
-  additional PizzaAdditional @relation(fields: [additionalId], references: [id])
+  size       PizzaSize       @relation(fields: [sizeId], references: [id], onDelete: Cascade)
+  additional PizzaAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
 
   @@unique([sizeId, additionalId])
 }
