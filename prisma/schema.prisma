@@ -22,13 +22,13 @@ enum FoodCategoryType {
 
 // ENTITIES
 
-model FoodMark {
+model Mark {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
   color String
 
   // Includes
-  foods FoodMarkToFood[]
+  foods MarkToFood[]
 }
 
 model FoodSize {
@@ -98,7 +98,7 @@ model Food {
   description String
 
   // Includes
-  marks       FoodMarkToFood[]
+  marks       MarkToFood[]
   categories  FoodCategoryToFood[]
   ingredients FoodIngredientToFood[]
   bases       FoodBaseToFood[]
@@ -106,14 +106,14 @@ model Food {
 
 // LINKS
 
-model FoodMarkToFood {
+model MarkToFood {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   markId String @db.ObjectId
   foodId String @db.ObjectId
 
   // Includes
-  mark FoodMark @relation(fields: [markId], references: [id], onDelete: Cascade)
-  food Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  mark Mark @relation(fields: [markId], references: [id], onDelete: Cascade)
+  food Food @relation(fields: [foodId], references: [id], onDelete: Cascade)
 }
 
 model FoodCategoryToFood {
