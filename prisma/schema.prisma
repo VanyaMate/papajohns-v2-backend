@@ -31,6 +31,19 @@ model Mark {
   foods MarkToFood[]
 }
 
+model Category {
+  id    String           @id @default(auto()) @map("_id") @db.ObjectId
+  type  FoodCategoryType
+  image String
+
+  // Includes
+  foods       CategoryToFood[]
+  ingredients CategoryToIngredient[]
+  bases       CategoryToFoodBase[]
+  sizes       CategoryToFoodSize[]
+  additionals CategoryToFoodAdditional[]
+}
+
 model FoodSize {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   title      String
@@ -39,7 +52,7 @@ model FoodSize {
   // Includes
   bases       FoodSizeToFoodBase[]
   additionals FoodAdditionalToFoodSize[]
-  categories  FoodCategoryToFoodSize[]
+  categories  CategoryToFoodSize[]
 }
 
 model FoodIngredient {
@@ -52,20 +65,7 @@ model FoodIngredient {
 
   // Includes
   foods      FoodIngredientToFood[]
-  categories FoodCategoryToIngredient[]
-}
-
-model FoodCategory {
-  id    String           @id @default(auto()) @map("_id") @db.ObjectId
-  type  FoodCategoryType
-  image String
-
-  // Includes
-  foods       FoodCategoryToFood[]
-  ingredients FoodCategoryToIngredient[]
-  bases       FoodCategoryToFoodBase[]
-  sizes       FoodCategoryToFoodSize[]
-  additionals FoodCategoryToFoodAdditional[]
+  categories CategoryToIngredient[]
 }
 
 model FoodBase {
@@ -77,7 +77,7 @@ model FoodBase {
   foods       FoodBaseToFood[]
   sizes       FoodSizeToFoodBase[]
   additionals FoodAdditionalToFoodBase[]
-  categories  FoodCategoryToFoodBase[]
+  categories  CategoryToFoodBase[]
 }
 
 model FoodAdditional {
@@ -88,7 +88,7 @@ model FoodAdditional {
 
   bases      FoodAdditionalToFoodBase[]
   sizes      FoodAdditionalToFoodSize[]
-  categories FoodCategoryToFoodAdditional[]
+  categories CategoryToFoodAdditional[]
 }
 
 model Food {
@@ -99,7 +99,7 @@ model Food {
 
   // Includes
   marks       MarkToFood[]
-  categories  FoodCategoryToFood[]
+  categories  CategoryToFood[]
   ingredients FoodIngredientToFood[]
   bases       FoodBaseToFood[]
 }
@@ -116,14 +116,14 @@ model MarkToFood {
   food Food @relation(fields: [foodId], references: [id], onDelete: Cascade)
 }
 
-model FoodCategoryToFood {
+model CategoryToFood {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   categoryId String @db.ObjectId
   foodId     String @db.ObjectId
 
   // Includes
-  category FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  food     Food         @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  food     Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
 }
 
 model FoodIngredientToFood {
@@ -178,38 +178,38 @@ model FoodAdditionalToFoodSize {
   additional FoodAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
 }
 
-model FoodCategoryToIngredient {
+model CategoryToIngredient {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   categoryId   String @db.ObjectId
   ingrediendId String @db.ObjectId
 
-  category   FoodCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category   Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   ingredient FoodIngredient @relation(fields: [ingrediendId], references: [id], onDelete: Cascade)
 }
 
-model FoodCategoryToFoodBase {
+model CategoryToFoodBase {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   categoryId String @db.ObjectId
   baseId     String @db.ObjectId
 
-  category FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  base     FoodBase     @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  base     FoodBase @relation(fields: [baseId], references: [id], onDelete: Cascade)
 }
 
-model FoodCategoryToFoodSize {
+model CategoryToFoodSize {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   categoryId String @db.ObjectId
   sizeId     String @db.ObjectId
 
-  category FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  size     FoodSize     @relation(fields: [sizeId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  size     FoodSize @relation(fields: [sizeId], references: [id], onDelete: Cascade)
 }
 
-model FoodCategoryToFoodAdditional {
+model CategoryToFoodAdditional {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   categoryId   String @db.ObjectId
   additionalId String @db.ObjectId
 
-  category   FoodCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category   Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   additional FoodAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
 }
