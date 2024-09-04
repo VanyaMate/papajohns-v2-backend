@@ -7,118 +7,209 @@ datasource db {
   url      = env("MONGO_DB_URL")
 }
 
-model Food {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
+// ENUMS
 
-  types            FoodType[]
-  linkToMarks      FoodToMark[]
-  linkToCategories FoodToCategory[]
+enum FoodIngredientPostfix {
+  gramme
+  each
+  milliliter
 }
 
-model FoodToMark {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  foodId String @db.ObjectId
-  markId String @db.ObjectId
-
-  food Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
-  mark FoodMark @relation(fields: [markId], references: [id], onDelete: Cascade)
+enum FoodCategoryType {
+  pizza
+  coffee
 }
 
-model FoodToCategory {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  foodId     String @db.ObjectId
-  categoryId String @db.ObjectId
-
-  food     Food         @relation(fields: [foodId], references: [id], onDelete: Cascade)
-  category FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-}
+// ENTITIES
 
 model FoodMark {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
   color String
-  icon  String
 
-  linkToFoods FoodToMark[]
-}
-
-model FoodCategory {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  color String
-  icon  String
-
-  linkToFoods FoodToCategory[]
-}
-
-model FoodType {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  image  String
-  price  Float
-  foodId String @db.ObjectId
-
-  food             Food                   @relation(fields: [foodId], references: [id], onDelete: Cascade)
-  nutritionals     FoodNutritional[]
-  linkToSizes      FoodTypeToSize[]
-  linkToAdditional FoodTypeToAdditional[]
-}
-
-model FoodTypeToSize {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  typeId String @db.ObjectId
-  sizeId String @db.ObjectId
-
-  type FoodType @relation(fields: [typeId], references: [id], onDelete: Cascade)
-  size FoodSize @relation(fields: [sizeId], references: [id], onDelete: Cascade)
-}
-
-model FoodTypeToAdditional {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  typeId       String @db.ObjectId
-  additionalId String @db.ObjectId
-
-  type       FoodType       @relation(fields: [typeId], references: [id], onDelete: Cascade)
-  additional FoodAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
+  // Includes
+  foods FoodMarkToFood[]
 }
 
 model FoodSize {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
-  adminTitle String @default("")
   title      String
   multiplier Float
-  person     Float
 
-  linkToFoodTypes      FoodTypeToSize[]
-  linkToFoodAdditional FoodSizeToAdditional[]
+  // Includes
+  bases       FoodSizeToFoodBase[]
+  additionals FoodAdditionalToFoodSize[]
+  categories  FoodCategoryToFoodSize[]
 }
 
-model FoodSizeToAdditional {
+model FoodIngredient {
+  id      String                @id @default(auto()) @map("_id") @db.ObjectId
+  title   String
+  image   String
+  price   Float
+  amount  Float
+  postfix FoodIngredientPostfix
+
+  // Includes
+  foods      FoodIngredientToFood[]
+  categories FoodCategoryToIngredient[]
+}
+
+model FoodCategory {
+  id    String           @id @default(auto()) @map("_id") @db.ObjectId
+  type  FoodCategoryType
+  image String
+
+  // Includes
+  foods       FoodCategoryToFood[]
+  ingredients FoodCategoryToIngredient[]
+  bases       FoodCategoryToFoodBase[]
+  sizes       FoodCategoryToFoodSize[]
+  additionals FoodCategoryToFoodAdditional[]
+}
+
+model FoodBase {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  price Float
+
+  // Includes
+  foods       FoodBaseToFood[]
+  sizes       FoodSizeToFoodBase[]
+  additionals FoodAdditionalToFoodBase[]
+  categories  FoodCategoryToFoodBase[]
+}
+
+model FoodAdditional {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  image String
+  price Float
+
+  bases      FoodAdditionalToFoodBase[]
+  sizes      FoodAdditionalToFoodSize[]
+  categories FoodCategoryToFoodAdditional[]
+}
+
+model Food {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  image       String
+  description String
+
+  // Includes
+  marks       FoodMarkToFood[]
+  categories  FoodCategoryToFood[]
+  ingredients FoodIngredientToFood[]
+  bases       FoodBaseToFood[]
+}
+
+// LINKS
+
+model FoodMarkToFood {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  markId String @db.ObjectId
+  foodId String @db.ObjectId
+
+  // Includes
+  mark FoodMark @relation(fields: [markId], references: [id], onDelete: Cascade)
+  food Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+}
+
+model FoodCategoryToFood {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId String @db.ObjectId
+  foodId     String @db.ObjectId
+
+  // Includes
+  category FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  food     Food         @relation(fields: [foodId], references: [id], onDelete: Cascade)
+}
+
+model FoodIngredientToFood {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  ingredientId String @db.ObjectId
+  foodId       String @db.ObjectId
+
+  // Includes
+  ingredient FoodIngredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  food       Food           @relation(fields: [foodId], references: [id], onDelete: Cascade)
+}
+
+model FoodBaseToFood {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  image  String
+  baseId String @db.ObjectId
+  foodId String @db.ObjectId
+
+  // Includes
+  base FoodBase @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  food Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+}
+
+model FoodSizeToFoodBase {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  image  String
+  baseId String @db.ObjectId
+  sizeId String @db.ObjectId
+
+  // Includes
+  base FoodBase @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  size FoodSize @relation(fields: [sizeId], references: [id], onDelete: Cascade)
+}
+
+model FoodAdditionalToFoodBase {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  baseId       String @db.ObjectId
+  additionalId String @db.ObjectId
+
+  // Includes
+  base       FoodBase       @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  additional FoodAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
+}
+
+model FoodAdditionalToFoodSize {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   sizeId       String @db.ObjectId
   additionalId String @db.ObjectId
 
+  // Includes
   size       FoodSize       @relation(fields: [sizeId], references: [id], onDelete: Cascade)
   additional FoodAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
 }
 
-model FoodAdditional {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  image       String
-  title       String
-  description String
-  price       Float
+model FoodCategoryToIngredient {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId   String @db.ObjectId
+  ingrediendId String @db.ObjectId
 
-  linkToFoodTypes FoodTypeToAdditional[]
-  linkToFoodSizes FoodSizeToAdditional[]
+  category   FoodCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  ingredient FoodIngredient @relation(fields: [ingrediendId], references: [id], onDelete: Cascade)
 }
 
-model FoodNutritional {
+model FoodCategoryToFoodBase {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  value      Float
-  foodTypeId String @db.ObjectId
+  categoryId String @db.ObjectId
+  baseId     String @db.ObjectId
 
-  foodType FoodType @relation(fields: [foodTypeId], references: [id], onDelete: Cascade)
+  category FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  base     FoodBase     @relation(fields: [baseId], references: [id], onDelete: Cascade)
+}
+
+model FoodCategoryToFoodSize {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId String @db.ObjectId
+  sizeId     String @db.ObjectId
+
+  category FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  size     FoodSize     @relation(fields: [sizeId], references: [id], onDelete: Cascade)
+}
+
+model FoodCategoryToFoodAdditional {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId   String @db.ObjectId
+  additionalId String @db.ObjectId
+
+  category   FoodCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  additional FoodAdditional @relation(fields: [additionalId], references: [id], onDelete: Cascade)
 }
