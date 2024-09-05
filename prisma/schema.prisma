@@ -15,7 +15,7 @@ enum FoodIngredientPostfix {
   milliliter
 }
 
-enum FoodCategoryType {
+enum CategoryType {
   pizza
   coffee
 }
@@ -32,8 +32,8 @@ model Mark {
 }
 
 model Category {
-  id    String           @id @default(auto()) @map("_id") @db.ObjectId
-  type  FoodCategoryType
+  id    String       @id @default(auto()) @map("_id") @db.ObjectId
+  type  CategoryType
   image String
 
   // Includes
